@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 const Register: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
 
+  // Consistent First Version Logo
   const Logo = () => (
     <div className="flex items-center gap-0.5 select-none">
       <span className="text-[#1e5336] font-bold text-3xl tracking-tighter">EC</span>
