@@ -1,26 +1,86 @@
-import React from 'react';
-import { Eye, EyeOff, Leaf } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Eye, EyeOff, Leaf, AlertCircle } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const Register: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
+
+  const { signup, loginWithGoogle } = useAuth();
+  const navigate = useNavigate();
 
   // Consistent First Version Logo
   const Logo = () => (
     <div className="flex items-center gap-0.5 select-none">
-      <span className="text-[#1e5336] font-bold text-3xl tracking-tighter">EC</span>
+      <span className="text-[#1e5336] dark:text-white font-bold text-3xl tracking-tighter">EC</span>
       <div className="relative flex items-center justify-center">
-        <span className="text-[#1e5336] font-bold text-3xl tracking-tighter">O</span>
+        <span className="text-[#1e5336] dark:text-white font-bold text-3xl tracking-tighter">O</span>
         <Leaf className="w-4 h-4 text-[#72b63b] fill-[#72b63b] absolute pb-0.5" />
       </div>
       <span className="text-[#72b63b] font-bold text-3xl tracking-tighter">TRACE</span>
     </div>
   );
 
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    if (password !== confirmPassword) {
+      return setError('As senhas não coincidem.');
+    }
+
+    try {
+      setError('');
+      setLoading(true);
+      await signup(email, password);
+      // Aqui você poderia salvar o firstName e lastName no Firestore se quisesse
+      navigate('/');
+    } catch (err: any) {
+      console.error(err);
+      if (err.code === 'auth/email-already-in-use') {
+        setError('Este e-mail já está em uso.');
+      } else if (err.code === 'auth/weak-password') {
+        setError('A senha deve ter pelo menos 6 caracteres.');
+      } else if (err.code === 'auth/configuration-not-found' || err.code === 'auth/operation-not-allowed') {
+        setError('Erro de configuração: Ative "Email/Senha" no Firebase Console (Menu Authentication).');
+      } else {
+        setError('Falha ao criar conta.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+  
+  async function handleGoogleLogin() {
+    try {
+      setError('');
+      setLoading(true);
+      await loginWithGoogle();
+      navigate('/');
+    } catch (err: any) {
+      console.error(err);
+      if (err.code === 'auth/configuration-not-found' || err.code === 'auth/operation-not-allowed') {
+        setError('Erro de configuração: Ative o provedor "Google" no Firebase Console (Menu Authentication).');
+      } else if (err.code === 'auth/popup-closed-by-user') {
+        setError('Login cancelado.');
+      } else {
+        setError('Falha ao entrar com o Google.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
+    <div className="min-h-screen flex flex-col md:flex-row dark:bg-gray-900">
       {/* Left Form Side - White */}
-       <div className="md:w-1/2 bg-white flex items-center justify-center p-8 order-2 md:order-1 relative">
+       <div className="md:w-1/2 bg-white dark:bg-gray-900 flex items-center justify-center p-8 order-2 md:order-1 relative transition-colors">
         {/* Logo Positioned Top Left on White Side */}
         <div className="absolute top-8 left-8 hidden md:block">
            <Link to="/">
@@ -35,20 +95,30 @@ const Register: React.FC = () => {
             </Link>
           </div>
 
-          <h2 className="text-4xl font-bold text-gray-900 mb-8">Crie sua conta</h2>
+          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">Crie sua conta</h2>
           
-          <form className="space-y-5">
+          {error && (
+            <div className="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded relative flex items-center gap-2" role="alert">
+              <AlertCircle size={18} />
+              <span className="block sm:inline text-sm">{error}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="flex gap-4">
                <div className="relative w-1/2">
                 <input 
                     type="text" 
                     id="firstName" 
-                    className="peer w-full bg-transparent border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-transparent focus:outline-none focus:border-[#1e5336] focus:ring-1 focus:ring-[#1e5336]" 
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                    className="peer w-full bg-transparent border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-transparent focus:outline-none focus:border-[#1e5336] dark:focus:border-[#72b63b] focus:ring-1 focus:ring-[#1e5336] dark:focus:ring-[#72b63b]" 
                     placeholder="Primeiro Nome"
                 />
                 <label 
                     htmlFor="firstName" 
-                    className="absolute left-3 -top-2.5 bg-white px-1 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-gray-600 peer-focus:text-sm"
+                    className="absolute left-3 -top-2.5 bg-white dark:bg-gray-900 px-1 text-gray-600 dark:text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 dark:peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-gray-600 dark:peer-focus:text-gray-300 peer-focus:text-sm"
                 >
                     Primeiro Nome
                 </label>
@@ -57,12 +127,15 @@ const Register: React.FC = () => {
                 <input 
                     type="text" 
                     id="lastName" 
-                    className="peer w-full bg-transparent border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-transparent focus:outline-none focus:border-[#1e5336] focus:ring-1 focus:ring-[#1e5336]" 
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
+                    className="peer w-full bg-transparent border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-transparent focus:outline-none focus:border-[#1e5336] dark:focus:border-[#72b63b] focus:ring-1 focus:ring-[#1e5336] dark:focus:ring-[#72b63b]" 
                     placeholder="Sobrenome"
                 />
                 <label 
                     htmlFor="lastName" 
-                    className="absolute left-3 -top-2.5 bg-white px-1 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-gray-600 peer-focus:text-sm"
+                    className="absolute left-3 -top-2.5 bg-white dark:bg-gray-900 px-1 text-gray-600 dark:text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 dark:peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-gray-600 dark:peer-focus:text-gray-300 peer-focus:text-sm"
                 >
                     Sobrenome
                 </label>
@@ -73,12 +146,15 @@ const Register: React.FC = () => {
               <input 
                 type="email" 
                 id="email" 
-                className="peer w-full bg-transparent border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-transparent focus:outline-none focus:border-[#1e5336] focus:ring-1 focus:ring-[#1e5336]" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="peer w-full bg-transparent border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-transparent focus:outline-none focus:border-[#1e5336] dark:focus:border-[#72b63b] focus:ring-1 focus:ring-[#1e5336] dark:focus:ring-[#72b63b]" 
                 placeholder="E-mail"
               />
               <label 
                 htmlFor="email" 
-                className="absolute left-3 -top-2.5 bg-white px-1 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-gray-600 peer-focus:text-sm"
+                className="absolute left-3 -top-2.5 bg-white dark:bg-gray-900 px-1 text-gray-600 dark:text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 dark:peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-gray-600 dark:peer-focus:text-gray-300 peer-focus:text-sm"
               >
                 E-mail
               </label>
@@ -88,19 +164,22 @@ const Register: React.FC = () => {
               <input 
                 type={showPassword ? "text" : "password"}
                 id="password" 
-                className="peer w-full bg-transparent border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-transparent focus:outline-none focus:border-[#1e5336] focus:ring-1 focus:ring-[#1e5336]" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="peer w-full bg-transparent border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-transparent focus:outline-none focus:border-[#1e5336] dark:focus:border-[#72b63b] focus:ring-1 focus:ring-[#1e5336] dark:focus:ring-[#72b63b]" 
                 placeholder="Senha"
               />
               <label 
                 htmlFor="password" 
-                className="absolute left-3 -top-2.5 bg-white px-1 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-gray-600 peer-focus:text-sm"
+                className="absolute left-3 -top-2.5 bg-white dark:bg-gray-900 px-1 text-gray-600 dark:text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 dark:peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-gray-600 dark:peer-focus:text-gray-300 peer-focus:text-sm"
               >
                 Senha
               </label>
               <button 
                 type="button" 
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
@@ -110,39 +189,50 @@ const Register: React.FC = () => {
               <input 
                 type={showPassword ? "text" : "password"}
                 id="confirmPassword" 
-                className="peer w-full bg-transparent border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-transparent focus:outline-none focus:border-[#1e5336] focus:ring-1 focus:ring-[#1e5336]" 
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                className="peer w-full bg-transparent border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-transparent focus:outline-none focus:border-[#1e5336] dark:focus:border-[#72b63b] focus:ring-1 focus:ring-[#1e5336] dark:focus:ring-[#72b63b]" 
                 placeholder="Confirme sua senha"
               />
               <label 
                 htmlFor="confirmPassword" 
-                className="absolute left-3 -top-2.5 bg-white px-1 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-gray-600 peer-focus:text-sm"
+                className="absolute left-3 -top-2.5 bg-white dark:bg-gray-900 px-1 text-gray-600 dark:text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 dark:peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-gray-600 dark:peer-focus:text-gray-300 peer-focus:text-sm"
               >
                 Confirme sua senha
               </label>
               <button 
                 type="button" 
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
 
-            <button type="button" className="w-full bg-[#1e5336] text-white py-3 rounded-lg font-bold hover:bg-[#153d26] transition-colors shadow-md mt-4">
-              Crie minha conta
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="w-full bg-[#1e5336] text-white py-3 rounded-lg font-bold hover:bg-[#153d26] transition-colors shadow-md mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Criando conta...' : 'Crie minha conta'}
             </button>
 
             <div className="relative flex items-center justify-center my-6">
-               <div className="border-t border-gray-300 w-full absolute"></div>
-               <span className="bg-white px-3 text-gray-500 relative z-10 text-sm">ou</span>
+               <div className="border-t border-gray-300 dark:border-gray-700 w-full absolute"></div>
+               <span className="bg-white dark:bg-gray-900 px-3 text-gray-500 dark:text-gray-400 relative z-10 text-sm">ou</span>
             </div>
 
-            <button type="button" className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+            <button 
+              type="button" 
+              onClick={handleGoogleLogin}
+              className="w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 py-3 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
+            >
               <span className="text-xl font-bold text-blue-500">G</span>
               Faça login com o Google
             </button>
 
-            <div className="text-center mt-8 text-sm text-gray-600">
+            <div className="text-center mt-8 text-sm text-gray-600 dark:text-gray-400">
                Tem uma conta? <Link to="/login" className="text-blue-400 hover:underline font-medium">Entrar</Link>
             </div>
 

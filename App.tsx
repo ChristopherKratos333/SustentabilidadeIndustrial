@@ -7,6 +7,7 @@ import Services from './pages/Services';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import { AuthProvider } from './contexts/AuthContext';
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -21,17 +22,19 @@ const ScrollToTop = () => {
 
 const App: React.FC = () => {
   return (
-    <HashRouter>
-      <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<Layout><Home /></Layout>} />
-        <Route path="/sobre" element={<Layout><About /></Layout>} />
-        <Route path="/servicos" element={<Layout><Services /></Layout>} />
-        <Route path="/contato" element={<Layout><Contact /></Layout>} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/cadastro" element={<Register />} />
-      </Routes>
-    </HashRouter>
+    <AuthProvider>
+      <HashRouter>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<Layout><Home /></Layout>} />
+          <Route path="/sobre" element={<Layout><About /></Layout>} />
+          <Route path="/servicos" element={<Layout><Services /></Layout>} />
+          <Route path="/contato" element={<Layout><Contact /></Layout>} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/cadastro" element={<Register />} />
+        </Routes>
+      </HashRouter>
+    </AuthProvider>
   );
 };
 

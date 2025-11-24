@@ -3,7 +3,7 @@ import { Shield, Lightbulb, Users } from 'lucide-react';
 
 const About: React.FC = () => {
   return (
-    <div className="bg-white">
+    <div className="bg-white dark:bg-gray-900 transition-colors duration-300">
       {/* Hero */}
       <div className="relative h-[400px]">
         <img 
@@ -20,17 +20,17 @@ const About: React.FC = () => {
       <section className="py-20 container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-12">
           <div className="lg:w-1/3">
-            <h2 className="text-3xl font-bold text-gray-900 leading-tight">
-              Conheça <span className="text-[#1e5336]">o futuro do <br /> rastreamento <br /> sustentável.</span>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white leading-tight">
+              Conheça <span className="text-[#1e5336] dark:text-[#72b63b]">o futuro do <br /> rastreamento <br /> sustentável.</span>
             </h2>
           </div>
           <div className="lg:w-1/3">
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
               A Ecotrace é uma plataforma inovadora focada em transformar cadeias produtivas por meio de tecnologia, transparência e responsabilidade ambiental.
             </p>
           </div>
           <div className="lg:w-1/3">
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
               Combinando análise inteligente de dados, relatórios ESG integrados e sistemas de rastreabilidade avançados, ajudamos empresas a tomar decisões mais sustentáveis.
             </p>
           </div>
@@ -40,33 +40,33 @@ const About: React.FC = () => {
       {/* Feature Pills */}
       <section className="pb-20 container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white shadow-lg rounded-xl p-6 flex items-start space-x-4 border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 flex items-start space-x-4 border border-gray-100 dark:border-gray-700 transition-colors">
             <div className="bg-[#1e5336] p-3 rounded-full flex-shrink-0">
               <Shield className="text-white w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 mb-1">Transparência Garantida</h3>
-              <p className="text-xs text-gray-500">Rastreabilidade completa e confiável em todas as etapas da cadeia produtiva.</p>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-1">Transparência Garantida</h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Rastreabilidade completa e confiável em todas as etapas da cadeia produtiva.</p>
             </div>
           </div>
 
-          <div className="bg-white shadow-lg rounded-xl p-6 flex items-start space-x-4 border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 flex items-start space-x-4 border border-gray-100 dark:border-gray-700 transition-colors">
             <div className="bg-[#1e5336] p-3 rounded-full flex-shrink-0">
               <Lightbulb className="text-white w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 mb-1">Insights Sustentáveis</h3>
-              <p className="text-xs text-gray-500">Relatórios ESG e indicadores claros para apoiar decisões estratégicas.</p>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-1">Insights Sustentáveis</h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Relatórios ESG e indicadores claros para apoiar decisões estratégicas.</p>
             </div>
           </div>
 
-          <div className="bg-white shadow-lg rounded-xl p-6 flex items-start space-x-4 border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 flex items-start space-x-4 border border-gray-100 dark:border-gray-700 transition-colors">
             <div className="bg-[#1e5336] p-3 rounded-full flex-shrink-0">
               <Users className="text-white w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 mb-1">Equipe Especializada</h3>
-              <p className="text-xs text-gray-500">Profissionais experientes em tecnologia, auditoria e gestão ambiental.</p>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-1">Equipe Especializada</h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Profissionais experientes em tecnologia, auditoria e gestão ambiental.</p>
             </div>
           </div>
         </div>
@@ -82,7 +82,7 @@ const About: React.FC = () => {
              <div className="rounded-2xl overflow-hidden">
                 <img src="https://picsum.photos/seed/officepeople2/400/600" className="w-full h-full object-cover" alt="Discussion" />
              </div>
-             <div className="rounded-2xl overflow-hidden bg-gray-100 flex items-center justify-center">
+             <div className="rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                  <img src="https://picsum.photos/seed/officepeople3/400/600" className="w-full h-full object-cover" alt="Strategy" />
              </div>
           </div>
@@ -90,40 +90,54 @@ const About: React.FC = () => {
       </section>
 
       {/* Team Section */}
-      <section className="py-20 bg-gray-100">
+      <section className="py-20 bg-gray-100 dark:bg-gray-950 transition-colors">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-[#1e5336]">
-              Membros <span className="text-white drop-shadow-md font-sans">do time</span>
-            </h2>
-            {/* The PDF has "Membros do time" with 'do time' in white. That's unusual on a light background. 
-                Looking at the image, the background is light gray, "Membros" is dark green, "do time" is white...
-                Wait, in the screenshot "Membros" is Green, "do time" is White. The background is a very light gray.
-                White text on light gray is unreadable. Let's look closer.
-                Ah, the screenshot has "Membros" in Green, "do time" in White with a subtle shadow maybe? 
-                Or maybe the background is actually darker gray in that section?
-                Wait, looking at Page 1 screenshot bottom, the background is light gray. "Membros" is Dark Green. "do time" is White.
-                This implies a text shadow or outline is essential, or my interpretation of the background color is off.
-                Let's stick to Dark Green for both or use a readable contrast. I'll make "do time" white with a strong shadow for effect, or just a lighter green.
-                Actually, let's just make it standard readable colors.
-            */}
-             <h2 className="text-4xl font-bold">
-              <span className="text-[#1e5336]">Membros</span> <span className="text-gray-400">do time</span>
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white">
+              <span className="text-[#1e5336] dark:text-[#72b63b]">Membros</span> <span className="text-gray-400 dark:text-gray-500">do time</span>
             </h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { name: "Lara Diniz", role: "CEO & Cofundadora", img: "https://picsum.photos/seed/lara/300/400" },
-              { name: "Rafael Monteiro", role: "Diretor de Tecnologia", img: "https://picsum.photos/seed/rafael/300/400" },
-              { name: "Camila Torres", role: "Gerente de ESG e Compliance", img: "https://picsum.photos/seed/camila/300/400" },
-              { name: "Diego Carvalho", role: "Analista de Sustentabilidade", img: "https://picsum.photos/seed/diego/300/400" }
+              { 
+                name: "Gabriela Sena", 
+                role: "Programação de Jogos Digitais",
+                description: "Interatividade",
+                img: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=800&auto=format&fit=crop"
+              },
+              { 
+                name: "Christopher Alves", 
+                role: "Informática",
+                description: "Codificação do site",
+                img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop"
+              },
+              { 
+                name: "Lucas Gomes", 
+                role: "Multimídia",
+                description: "Infraestrutura dos acessos digitais",
+                img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop"
+              },
+              { 
+                name: "Lucas Gustavo", 
+                role: "Design Gráfico",
+                description: "Estilo do site e do projeto",
+                img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop"
+              }
+            
             ].map((member, idx) => (
-              <div key={idx} className="bg-white rounded-2xl overflow-hidden shadow-lg group relative">
-                <img src={member.img} alt={member.name} className="w-full h-80 object-cover" />
-                <div className="absolute bottom-4 left-4 right-4 bg-[#1e5336] rounded-xl p-3 text-center shadow-lg transform translate-y-2 opacity-90 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+              <div key={idx} className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg group relative transition-colors h-96">
+                <img 
+                  src={member.img} 
+                  alt={member.name} 
+                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                />
+                <div className="absolute bottom-4 left-4 right-4 bg-[#1e5336] rounded-xl p-4 text-center shadow-lg transform transition-all duration-300 translate-y-8 group-hover:translate-y-0">
                   <h3 className="text-white font-bold text-lg">{member.name}</h3>
-                  <p className="text-green-200 text-xs">{member.role}</p>
+                  <p className="text-green-200 text-xs mb-0 group-hover:mb-2 transition-all duration-300">{member.role}</p>
+                  <div className="h-0 opacity-0 group-hover:h-auto group-hover:opacity-100 overflow-hidden transition-all duration-300">
+                    <p className="text-white text-sm border-t border-white/20 pt-2 leading-tight">{member.description}</p>
+                  </div>
                 </div>
               </div>
             ))}
