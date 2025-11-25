@@ -21,14 +21,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   // Check for saved theme on mount
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    // Changed logic: Defaults to Light mode. Only activates dark mode if explicitly saved as 'dark'.
+    // Removed the "prefers-color-scheme" check to satisfy user request for Light Mode default.
+    if (savedTheme === 'dark') {
       setIsDarkMode(true);
       document.documentElement.classList.add('dark');
     } else {
       setIsDarkMode(false);
       document.documentElement.classList.remove('dark');
+      // Ensure 'light' is set if nothing was there, or keep it consistent
+      if (!savedTheme) localStorage.setItem('theme', 'light');
     }
   }, []);
 
