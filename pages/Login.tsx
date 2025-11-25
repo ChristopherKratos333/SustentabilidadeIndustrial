@@ -1,25 +1,46 @@
-import React, { useState } from 'react';
-import { Eye, EyeOff, Leaf, AlertCircle } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Eye, EyeOff, Leaf, AlertCircle, CheckCircle } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
   
-  const { login, loginWithGoogle } = useAuth();
+  const { login, loginWithGoogle, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.successMessage) {
+      setSuccess(location.state.successMessage);
+      // Opcional: Limpar o state do history para que a mensagem não apareça num refresh, 
+      // mas no react-router o state persiste. Para UX simples, ok.
+      window.history.replaceState({}, '');
+    }
+  }, [location]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     
     try {
       setError('');
+      setSuccess('');
       setLoading(true);
-      await login(email, password);
+      const userCredential = await login(email, password);
+      
+      // Verificação de E-mail
+      if (!userCredential.user.emailVerified) {
+        await logout(); // Desloga imediatamente
+        setError('E-mail não verificado. Por favor, verifique sua caixa de entrada e clique no link de ativação antes de fazer login.');
+        setLoading(false);
+        return;
+      }
+
       navigate('/');
     } catch (err: any) {
       console.error(err);
@@ -31,15 +52,18 @@ const Login: React.FC = () => {
         setError('Falha ao fazer login. Verifique suas credenciais.');
       }
     } finally {
-      setLoading(false);
+      if (loading) setLoading(false);
     }
   }
 
   async function handleGoogleLogin() {
     try {
       setError('');
+      setSuccess('');
       setLoading(true);
       await loginWithGoogle();
+      // O login com Google geralmente verifica o e-mail automaticamente, 
+      // então não bloqueamos aqui, mas redirecionamos.
       navigate('/');
     } catch (err: any) {
       console.error(err);
@@ -103,8 +127,15 @@ const Login: React.FC = () => {
           
           {error && (
             <div className="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded relative flex items-center gap-2" role="alert">
-              <AlertCircle size={18} />
+              <AlertCircle size={18} className="flex-shrink-0" />
               <span className="block sm:inline text-sm">{error}</span>
+            </div>
+          )}
+
+          {success && (
+            <div className="bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-800 text-green-700 dark:text-green-300 px-4 py-3 rounded relative flex items-center gap-2" role="alert">
+              <CheckCircle size={18} className="flex-shrink-0" />
+              <span className="block sm:inline text-sm">{success}</span>
             </div>
           )}
 

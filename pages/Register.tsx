@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Eye, EyeOff, Leaf, AlertCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -15,7 +16,7 @@ const Register: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
 
-  const { signup, loginWithGoogle } = useAuth();
+  const { signup, logout, loginWithGoogle, verifyEmail } = useAuth();
   const navigate = useNavigate();
 
   // Consistent First Version Logo
@@ -41,24 +42,49 @@ const Register: React.FC = () => {
       setError('');
       setLoading(true);
       
-      // Create auth user
+      console.log("Iniciando criação de usuário...");
+      // 1. Cria o usuário na Autenticação (Auth)
       const userCredential = await signup(email, password);
       const user = userCredential.user;
+      console.log("Usuário criado na Autenticação:", user.uid);
 
-      // Create user document in Firestore
+      // 2. Envia e-mail de verificação
       if (user) {
-        await setDoc(doc(db, "users", user.uid), {
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          createdAt: new Date().toISOString(),
-          uid: user.uid
-        });
+        await verifyEmail(user);
+        console.log("E-mail de verificação enviado.");
       }
 
-      navigate('/');
+      // 3. Tenta salvar no Firestore com Timeout Forçado
+      if (user) {
+        const userData = {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            createdAt: new Date().toISOString(),
+            uid: user.uid
+        };
+
+        const saveToDbPromise = setDoc(doc(db, "users", user.uid), userData);
+        
+        const timeoutPromise = new Promise((resolve) => {
+            setTimeout(() => {
+                console.warn("Timeout do Firestore atingido. Pulando etapa de banco de dados para liberar o usuário.");
+                resolve('timeout');
+            }, 2000);
+        });
+
+        await Promise.race([saveToDbPromise, timeoutPromise]);
+      }
+
+      // 4. Logout forçado (já que criar conta faz login automático)
+      await logout();
+
+      // 5. Redireciona para o login com mensagem instruindo verificação
+      console.log("Redirecionando para login...");
+      navigate('/login', { state: { successMessage: 'Conta criada! Um e-mail de verificação foi enviado. Verifique antes de entrar.' } });
+
     } catch (err: any) {
-      console.error(err);
+      console.error("Erro no processo de cadastro:", err);
       if (err.code === 'auth/email-already-in-use') {
         setError('Este e-mail já está em uso.');
       } else if (err.code === 'auth/weak-password') {
@@ -66,10 +92,10 @@ const Register: React.FC = () => {
       } else if (err.code === 'auth/configuration-not-found' || err.code === 'auth/operation-not-allowed') {
         setError('Erro de configuração: Ative "Email/Senha" no Firebase Console (Menu Authentication).');
       } else {
-        setError('Falha ao criar conta.');
+        setError('Falha ao criar conta. Tente novamente.');
       }
     } finally {
-      setLoading(false);
+      if (loading) setLoading(false);
     }
   }
   
