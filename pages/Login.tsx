@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, Leaf, AlertCircle, CheckCircle } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { auth } from '../lib/firebase'; // Import auth directly for checking currentUser after reload
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -33,10 +34,19 @@ const Login: React.FC = () => {
       setLoading(true);
       const userCredential = await login(email, password);
       
+      // Força a atualização dos dados do usuário do servidor
+      // Isso garante que se o usuário clicou no link em outro dispositivo, o app saiba disso agora.
+      if (userCredential.user) {
+        await userCredential.user.reload();
+      }
+
+      // Verifica o usuário atualizado no auth
+      const currentUser = auth.currentUser;
+
       // Verificação de E-mail
-      if (!userCredential.user.emailVerified) {
+      if (currentUser && !currentUser.emailVerified) {
         await logout(); // Desloga imediatamente
-        setError('E-mail não verificado. Por favor, verifique sua caixa de entrada e clique no link de ativação antes de fazer login.');
+        setError('E-mail não verificado. Por favor, verifique sua caixa de entrada (e spam) e clique no link de ativação antes de fazer login.');
         setLoading(false);
         return;
       }
