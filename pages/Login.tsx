@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, Leaf, AlertCircle, CheckCircle } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { auth } from '../lib/firebase'; // Import auth directly for checking currentUser after reload
+// Não precisamos mais importar auth diretamente aqui para a verificação, usaremos o retorno do login
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -19,8 +19,6 @@ const Login: React.FC = () => {
   useEffect(() => {
     if (location.state?.successMessage) {
       setSuccess(location.state.successMessage);
-      // Opcional: Limpar o state do history para que a mensagem não apareça num refresh, 
-      // mas no react-router o state persiste. Para UX simples, ok.
       window.history.replaceState({}, '');
     }
   }, [location]);
@@ -32,26 +30,27 @@ const Login: React.FC = () => {
       setError('');
       setSuccess('');
       setLoading(true);
+
+      // 1. Realiza o login
       const userCredential = await login(email, password);
+      const user = userCredential.user;
       
-      // Força a atualização dos dados do usuário do servidor
-      // Isso garante que se o usuário clicou no link em outro dispositivo, o app saiba disso agora.
-      if (userCredential.user) {
-        await userCredential.user.reload();
+      // 2. Se o usuário existe, forçamos a atualização dos dados do servidor
+      if (user) {
+        await user.reload();
+        
+        // 3. Verificamos diretamente na instância atualizada se o e-mail está verificado
+        if (!user.emailVerified) {
+          await logout(); // Desloga imediatamente para impedir acesso
+          setError('E-mail não verificado. Por favor, verifique sua caixa de entrada (e spam) e clique no link de ativação antes de fazer login.');
+          setLoading(false);
+          return;
+        }
       }
 
-      // Verifica o usuário atualizado no auth
-      const currentUser = auth.currentUser;
-
-      // Verificação de E-mail
-      if (currentUser && !currentUser.emailVerified) {
-        await logout(); // Desloga imediatamente
-        setError('E-mail não verificado. Por favor, verifique sua caixa de entrada (e spam) e clique no link de ativação antes de fazer login.');
-        setLoading(false);
-        return;
-      }
-
+      // 4. Se passou, navega para a home
       navigate('/');
+
     } catch (err: any) {
       console.error(err);
       if (err.code === 'auth/invalid-credential') {
@@ -72,8 +71,7 @@ const Login: React.FC = () => {
       setSuccess('');
       setLoading(true);
       await loginWithGoogle();
-      // O login com Google geralmente verifica o e-mail automaticamente, 
-      // então não bloqueamos aqui, mas redirecionamos.
+      // O login com Google já verifica o e-mail automaticamente
       navigate('/');
     } catch (err: any) {
       console.error(err);
