@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cloud, Users, Headset, BarChart2, Shield, FileCheck, Globe, Activity } from 'lucide-react';
+import { Cloud, Users, Headset } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Services: React.FC = () => {

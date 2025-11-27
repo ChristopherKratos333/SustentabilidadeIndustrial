@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Eye, EyeOff, Leaf, AlertCircle, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, Leaf, AlertCircle, CheckCircle, X, Mail } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-// Não precisamos mais importar auth diretamente aqui para a verificação, usaremos o retorno do login
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -12,7 +11,13 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
   
-  const { login, loginWithGoogle, logout } = useAuth();
+  // Forgot Password States
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetMessage, setResetMessage] = useState({ type: '', text: '' });
+
+  const { login, loginWithGoogle, logout, resetPassword } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -23,6 +28,7 @@ const Login: React.FC = () => {
     }
   }, [location]);
 
+  // Handle Login
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     
@@ -65,6 +71,7 @@ const Login: React.FC = () => {
     }
   }
 
+  // Handle Google Login
   async function handleGoogleLogin() {
     try {
       setError('');
@@ -87,6 +94,36 @@ const Login: React.FC = () => {
     }
   }
 
+  // Handle Password Reset
+  async function handleResetPassword(e: React.FormEvent) {
+    e.preventDefault();
+    
+    if (!resetEmail) {
+      setResetMessage({ type: 'error', text: 'Por favor, digite seu e-mail.' });
+      return;
+    }
+
+    try {
+      setResetMessage({ type: '', text: '' });
+      setResetLoading(true);
+      await resetPassword(resetEmail);
+      setResetMessage({ type: 'success', text: 'E-mail de redefinição enviado! Verifique sua caixa de entrada.' });
+      // Optional: Close modal after delay
+      // setTimeout(() => setIsResetModalOpen(false), 3000);
+    } catch (err: any) {
+      console.error(err);
+      if (err.code === 'auth/user-not-found') {
+         setResetMessage({ type: 'error', text: 'Este e-mail não está cadastrado.' });
+      } else if (err.code === 'auth/invalid-email') {
+         setResetMessage({ type: 'error', text: 'E-mail inválido.' });
+      } else {
+         setResetMessage({ type: 'error', text: 'Falha ao enviar e-mail. Tente novamente.' });
+      }
+    } finally {
+      setResetLoading(false);
+    }
+  }
+
   // Consistent First Version Logo
   const Logo = () => (
     <div className="flex items-center gap-0.5 select-none">
@@ -100,7 +137,66 @@ const Login: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row dark:bg-gray-900">
+    <div className="min-h-screen flex flex-col md:flex-row dark:bg-gray-900 relative">
+      {/* Reset Password Modal */}
+      {isResetModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-fade-in-up border border-gray-100 dark:border-gray-700">
+             <div className="flex justify-between items-center p-6 border-b border-gray-100 dark:border-gray-700">
+               <h3 className="text-xl font-bold text-gray-900 dark:text-white">Redefinir Senha</h3>
+               <button 
+                 onClick={() => { setIsResetModalOpen(false); setResetMessage({type: '', text: ''}); }}
+                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+               >
+                 <X size={24} />
+               </button>
+             </div>
+             
+             <div className="p-6">
+               <p className="text-gray-600 dark:text-gray-300 mb-6 text-sm">
+                 Digite o e-mail associado à sua conta e enviaremos um link para você criar uma nova senha.
+               </p>
+
+               {resetMessage.text && (
+                 <div className={`mb-4 px-4 py-3 rounded flex items-center gap-2 ${
+                   resetMessage.type === 'error' 
+                     ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800' 
+                     : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800'
+                 }`}>
+                    {resetMessage.type === 'error' ? <AlertCircle size={18} /> : <CheckCircle size={18} />}
+                    <span className="text-sm">{resetMessage.text}</span>
+                 </div>
+               )}
+
+               <form onSubmit={handleResetPassword} className="space-y-4">
+                  <div className="relative">
+                    <input 
+                      type="email" 
+                      value={resetEmail}
+                      onChange={(e) => setResetEmail(e.target.value)}
+                      required
+                      className="peer w-full bg-transparent border border-gray-300 dark:border-gray-600 rounded-lg pl-10 pr-4 py-3 text-gray-900 dark:text-white placeholder-transparent focus:outline-none focus:border-[#1e5336] dark:focus:border-[#72b63b] focus:ring-1 focus:ring-[#1e5336] dark:focus:ring-[#72b63b]" 
+                      placeholder="Seu e-mail"
+                    />
+                    <label className="absolute left-10 -top-2.5 bg-white dark:bg-gray-800 px-1 text-gray-600 dark:text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 dark:peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-gray-600 dark:peer-focus:text-gray-300 peer-focus:text-sm">
+                      Seu e-mail
+                    </label>
+                    <Mail className="absolute left-3 top-3.5 text-gray-400" size={20} />
+                  </div>
+
+                  <button 
+                    type="submit" 
+                    disabled={resetLoading}
+                    className="w-full bg-[#1e5336] text-white py-3 rounded-lg font-bold hover:bg-[#153d26] transition-colors disabled:opacity-50"
+                  >
+                    {resetLoading ? 'Enviando...' : 'Enviar link de recuperação'}
+                  </button>
+               </form>
+             </div>
+          </div>
+        </div>
+      )}
+
       {/* Left Gradient Side (Green) */}
       <div className="md:w-1/2 bg-gradient-to-br from-[#72b63b] to-[#1e5336] relative flex items-center justify-center p-12 overflow-hidden">
         {/* Abstract blur shapes */}
@@ -223,7 +319,13 @@ const Login: React.FC = () => {
                   <input type="checkbox" className="mr-2 rounded text-[#1e5336] focus:ring-[#1e5336]" />
                   Lembrar-me
                </label>
-               <a href="#" className="text-blue-400 hover:underline">Esqueceu a senha?</a>
+               <button 
+                  type="button" 
+                  onClick={() => setIsResetModalOpen(true)}
+                  className="text-blue-400 hover:underline bg-transparent border-none p-0 cursor-pointer"
+               >
+                 Esqueceu a senha?
+               </button>
             </div>
 
             <div className="text-center mt-8 text-sm text-gray-600 dark:text-gray-400">

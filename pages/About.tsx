@@ -104,33 +104,32 @@ const About: React.FC = () => {
                 name: "Gabriela Sena", 
                 role: "Programação de Jogos Digitais",
                 description: "Interatividade",
-                img: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=800&auto=format&fit=crop"
+                img: "/imagens/gabriela-sena.jpg"
               },
               { 
                 name: "Christopher Alves", 
                 role: "Informática",
                 description: "Codificação do site",
-                img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop"
+                img: "/imagens/christopher-alves.jpg"
               },
               { 
                 name: "Lucas Gomes", 
                 role: "Multimídia",
                 description: "Infraestrutura dos acessos digitais",
-                img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop"
+                img: "/imagens/lucas-gomes.jpg"
               },
               { 
                 name: "Lucas Gustavo", 
                 role: "Design Gráfico",
                 description: "Estilo do site e do projeto",
-                img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop"
+                img: "/imagens/lucas-gustavo.jpg"
               }
-            
-            ].map((member, idx) => (
-              <div key={idx} className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg group relative transition-colors h-96">
+            ].map((member) => (
+              <div key={member.name} className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg group relative transition-colors h-96">
                 <img 
                   src={member.img} 
                   alt={member.name} 
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                  className="w-full h-full object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-500"
                 />
                 <div className="absolute bottom-4 left-4 right-4 bg-[#1e5336] rounded-xl p-4 text-center shadow-lg transform transition-all duration-300 translate-y-8 group-hover:translate-y-0">
                   <h3 className="text-white font-bold text-lg">{member.name}</h3>

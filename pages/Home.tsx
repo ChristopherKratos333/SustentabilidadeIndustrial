@@ -1,5 +1,5 @@
 import React from 'react';
-import { Leaf, ShieldCheck, Zap, Activity, BarChart3, PieChart, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react';
+import { ShieldCheck, Zap, PieChart, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Home: React.FC = () => {

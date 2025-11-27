@@ -42,16 +42,13 @@ const Register: React.FC = () => {
       setError('');
       setLoading(true);
       
-      console.log("Iniciando criação de usuário...");
       // 1. Cria o usuário na Autenticação (Auth)
       const userCredential = await signup(email, password);
       const user = userCredential.user;
-      console.log("Usuário criado na Autenticação:", user.uid);
 
       // 2. Envia e-mail de verificação
       if (user) {
         await verifyEmail(user);
-        console.log("E-mail de verificação enviado.");
       }
 
       // 3. Tenta salvar no Firestore com Timeout Forçado
@@ -68,7 +65,6 @@ const Register: React.FC = () => {
         
         const timeoutPromise = new Promise((resolve) => {
             setTimeout(() => {
-                console.warn("Timeout do Firestore atingido. Pulando etapa de banco de dados para liberar o usuário.");
                 resolve('timeout');
             }, 2000);
         });
@@ -80,11 +76,9 @@ const Register: React.FC = () => {
       await logout();
 
       // 5. Redireciona para o login com mensagem instruindo verificação
-      console.log("Redirecionando para login...");
       navigate('/login', { state: { successMessage: 'Conta criada! Um e-mail de verificação foi enviado. Verifique antes de entrar.' } });
 
     } catch (err: any) {
-      console.error("Erro no processo de cadastro:", err);
       if (err.code === 'auth/email-already-in-use') {
         setError('Este e-mail já está em uso.');
       } else if (err.code === 'auth/weak-password') {
@@ -106,7 +100,6 @@ const Register: React.FC = () => {
       await loginWithGoogle();
       navigate('/');
     } catch (err: any) {
-      console.error(err);
       if (err.code === 'auth/configuration-not-found' || err.code === 'auth/operation-not-allowed') {
         setError('Erro de configuração: Ative o provedor "Google" no Firebase Console (Menu Authentication).');
       } else if (err.code === 'auth/popup-closed-by-user') {

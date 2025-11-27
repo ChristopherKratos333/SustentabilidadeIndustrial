@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Facebook, Instagram, Youtube, Twitter, Leaf, Moon, Sun, LogOut, User as UserIcon } from 'lucide-react';
+import { Menu, X, Instagram, Youtube, Twitter, Leaf, Moon, Sun, LogOut } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface LayoutProps {
