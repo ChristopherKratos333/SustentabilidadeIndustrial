@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Instagram, Youtube, Twitter, Leaf, Moon, Sun, LogOut } from 'lucide-react';
+import { Menu, X, Leaf, Moon, Sun, LogOut } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface LayoutProps {
@@ -195,20 +195,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Link to="/contato" className="hover:text-[#1e5336] dark:hover:text-[#72b63b] transition-colors">Contato</Link>
             </nav>
 
-            <div className="flex space-x-6 mb-8">
-              <a href="#" className="bg-[#1e5336] p-2 rounded-full text-white hover:bg-[#153d26] transition-colors">
-                <Twitter size={18} />
-              </a>
-              <a href="#" className="bg-[#1e5336] p-2 rounded-full text-white hover:bg-[#153d26] transition-colors">
-                <Instagram size={18} />
-              </a>
-              <a href="#" className="bg-[#1e5336] p-2 rounded-full text-white hover:bg-[#153d26] transition-colors">
-                <Youtube size={18} />
-              </a>
-            </div>
-
             <div className="text-center text-xs text-gray-500 dark:text-gray-500">
-              <p>Todos os direitos reservados a EcoTrace 2025.</p>
+              <p>&copy; EcoTrace 2025. Todos os direitos reservados.</p>
             </div>
           </div>
         </div>

@@ -144,7 +144,7 @@ const Landing: React.FC = () => {
         
       {/* Footer Simple */}
       <footer className="py-6 text-center text-gray-400 text-sm">
-        &copy; 2025 EcoTrace. Todos os direitos reservados.
+        &copy; EcoTrace 2025. Todos os direitos reservados.
       </footer>
     </div>
   );

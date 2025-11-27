@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Phone, Mail, Instagram, Twitter, Youtube } from 'lucide-react';
+import { MapPin, Phone, Mail } from 'lucide-react';
 
 const Contact: React.FC = () => {
   return (
@@ -53,21 +53,6 @@ const Contact: React.FC = () => {
                   <p className="text-gray-600 dark:text-gray-400 text-sm">ecotrace@gmail.com</p>
                 </div>
               </div>
-            </div>
-
-            <div className="flex gap-4 mt-8">
-              <a href="#" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 hover:text-[#1e5336] dark:hover:text-[#72b63b]">
-                <div className="bg-[#1e5336] p-1.5 rounded-full text-white"><Twitter size={14} /></div>
-                @ecotrace
-              </a>
-               <a href="#" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 hover:text-[#1e5336] dark:hover:text-[#72b63b]">
-                <div className="bg-[#1e5336] p-1.5 rounded-full text-white"><Instagram size={14} /></div>
-                @ecotraceambiental
-              </a>
-               <a href="#" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 hover:text-[#1e5336] dark:hover:text-[#72b63b]">
-                <div className="bg-[#1e5336] p-1.5 rounded-full text-white"><Youtube size={14} /></div>
-                @ecotraceambientalTV
-              </a>
             </div>
           </div>
 
