@@ -35,7 +35,7 @@ const Game: React.FC = () => {
         </div>
 
         {/* Central Image */}
-        <div className="flex justify-center items-center w-full mb-12">
+        <div className="flex flex-col justify-center items-center w-full mb-12 gap-8">
           <div className="relative w-full max-w-4xl aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-[#1e5336]/10 dark:border-[#72b63b]/20 group">
             {/* Using a placeholder that represents a game/digital environment */}
             <img 
@@ -44,20 +44,33 @@ const Game: React.FC = () => {
               className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
             />
             
-            {/* Overlay Play Button (Visual representation) */}
+            {/* Overlay Play Button (Linked to Itch.io) */}
             <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/20 transition-colors">
-              <button className="bg-[#72b63b] hover:bg-[#1e5336] text-white p-6 rounded-full shadow-lg transform transition-all hover:scale-110 active:scale-95">
+              <a 
+                href="https://bagigabi.itch.io/ecotrace"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#72b63b] hover:bg-[#1e5336] text-white p-6 rounded-full shadow-lg transform transition-all hover:scale-110 active:scale-95 flex items-center justify-center"
+                title="Jogar Agora"
+              >
                 <Gamepad2 size={48} fill="currentColor" />
-              </button>
+              </a>
             </div>
           </div>
-        </div>
 
-        {/* Footer Call to Action */}
-        <div className="text-center">
-          <p className="text-gray-500 dark:text-gray-400 text-sm">
-            Disponível em breve para todas as plataformas.
-          </p>
+          {/* Itch.io Embed Widget */}
+          <div className="w-full flex justify-center">
+            <iframe 
+              frameBorder="0" 
+              src="https://itch.io/embed/4082288" 
+              width="552" 
+              height="167"
+              title="EcoTrace Itch.io Widget"
+              className="max-w-full"
+            >
+              <a href="https://bagigabi.itch.io/ecotrace">ECOTRACE by Bagigabi</a>
+            </iframe>
+          </div>
         </div>
 
       </div>
