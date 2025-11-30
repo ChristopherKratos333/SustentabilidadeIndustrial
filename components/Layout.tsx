@@ -100,9 +100,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
               </button>
 
-              <button className="px-5 py-2 text-sm font-medium text-[#1e5336] border border-[#1e5336] dark:text-[#72b63b] dark:border-[#72b63b] rounded-full hover:bg-[#1e5336] hover:text-white dark:hover:bg-[#72b63b] dark:hover:text-white transition-colors">
-                Ver demonstração
-              </button>
+              <Link to="/game" className="px-5 py-2 text-sm font-medium text-[#1e5336] border border-[#1e5336] dark:text-[#72b63b] dark:border-[#72b63b] rounded-full hover:bg-[#1e5336] hover:text-white dark:hover:bg-[#72b63b] dark:hover:text-white transition-colors">
+                Conheça nosso jogo!
+              </Link>
               
               {currentUser ? (
                 <div className="flex items-center gap-2">
@@ -153,9 +153,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Link to="/contato" className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-200 hover:text-[#1e5336] dark:hover:text-[#72b63b]" onClick={() => setIsMobileMenuOpen(false)}>Contato</Link>
               
               <div className="mt-4 flex flex-col space-y-2 w-full px-4">
-                <button className="w-full px-5 py-2 text-sm font-medium text-[#1e5336] dark:text-[#72b63b] border border-[#1e5336] dark:border-[#72b63b] rounded-full">
-                  Ver demonstração
-                </button>
+                <Link to="/game" className="w-full text-center px-5 py-2 text-sm font-medium text-[#1e5336] dark:text-[#72b63b] border border-[#1e5336] dark:border-[#72b63b] rounded-full" onClick={() => setIsMobileMenuOpen(false)}>
+                  Conheça nosso jogo!
+                </Link>
                 
                 {currentUser ? (
                   <button 

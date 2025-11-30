@@ -8,6 +8,7 @@ import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Landing from './pages/Landing';
+import Game from './pages/Game';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // Scroll to top on route change
@@ -77,6 +78,7 @@ const App: React.FC = () => {
           <Route path="/sobre" element={<ProtectedRoute><Layout><About /></Layout></ProtectedRoute>} />
           <Route path="/servicos" element={<ProtectedRoute><Layout><Services /></Layout></ProtectedRoute>} />
           <Route path="/contato" element={<ProtectedRoute><Layout><Contact /></Layout></ProtectedRoute>} />
+          <Route path="/game" element={<ProtectedRoute><Layout><Game /></Layout></ProtectedRoute>} />
           
           {/* Catch all - Redirect to root */}
           <Route path="*" element={<Navigate to="/" replace />} />

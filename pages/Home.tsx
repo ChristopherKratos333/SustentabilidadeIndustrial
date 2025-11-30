@@ -18,9 +18,9 @@ const Home: React.FC = () => {
             Monitore resíduos, energias e metas ESG com tecnologia de ponta.
           </p>
           <div className="flex flex-wrap gap-4 pt-4">
-            <button className="px-6 py-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-700 rounded-full font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-              Ver demonstração
-            </button>
+            <Link to="/game" className="px-6 py-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-700 rounded-full font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center">
+              Conheça nosso jogo!
+            </Link>
             <button className="px-6 py-3 bg-[#1e5336] text-white rounded-full font-medium hover:bg-[#153d26] transition-colors shadow-lg shadow-green-900/20">
               Saiba mais
             </button>
